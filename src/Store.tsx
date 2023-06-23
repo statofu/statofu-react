@@ -1,9 +1,9 @@
 import React, {
+  ComponentType,
   createContext,
+  FC,
   PropsWithChildren,
-  ReactNode,
   useContext,
-  useEffect,
   useRef,
 } from 'react';
 import { createStatofuStore, type StatofuStore } from 'statofu';
@@ -15,39 +15,39 @@ export type StoreProviderProps = PropsWithChildren<{
   onCreate?: (store: StatofuStore) => void;
 }>;
 
-export function StoreProvider({
+export const StoreProvider: FC<StoreProviderProps> = ({
   store: providedStore,
   onCreate,
   children,
-}: StoreProviderProps): ReactNode {
+}) => {
   const refManagedStore = useRef<StatofuStore>();
 
-  const refMakeManagedStoreIfNeeded = useRef(() => {
-    if (!providedStore && !refManagedStore.current) {
-      const managedStore = createStatofuStore();
-      onCreate?.(managedStore);
-      refManagedStore.current = managedStore;
-    }
-  });
-
-  refMakeManagedStoreIfNeeded.current();
-
-  useEffect(() => {
-    refMakeManagedStoreIfNeeded.current();
-    return () => {
-      if (refManagedStore.current) {
-        const managedStore = refManagedStore.current;
-        managedStore.clear();
-        refManagedStore.current = undefined;
-      }
-    };
-  }, []);
+  if (!providedStore && !refManagedStore.current) {
+    const managedStore = createStatofuStore();
+    onCreate?.(managedStore);
+    refManagedStore.current = managedStore;
+  }
 
   return (
     <StoreContext.Provider value={providedStore ?? refManagedStore.current}>
       {children}
     </StoreContext.Provider>
   );
+};
+
+export function withStore(hocProps: Pick<StoreProviderProps, 'store' | 'onCreate'> = {}) {
+  return <AComponentProps extends {}>(AComponent: ComponentType<AComponentProps>) => {
+    const AComponentWithStore: FC<
+      typeof hocProps & Omit<AComponentProps, keyof typeof hocProps>
+    > = ({ store, onCreate, ...aComponentProps }) => {
+      return (
+        <StoreProvider store={store ?? hocProps.store} onCreate={onCreate ?? hocProps.onCreate}>
+          <AComponent {...(aComponentProps as AComponentProps)} />
+        </StoreProvider>
+      );
+    };
+    return AComponentWithStore;
+  };
 }
 
 export function useStore(): StatofuStore {

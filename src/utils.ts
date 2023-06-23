@@ -1,23 +1,27 @@
 import { useRef } from 'react';
-import type { OneOrMulti, StatofuState } from 'statofu';
 import { areSameArrays } from 'statofu/src/utils';
 
 const { isArray } = Array;
 
-export function useStableStates<
-  TNullableStates extends OneOrMulti<StatofuState> | null | undefined
->(states: TNullableStates): TNullableStates {
-  const refStableStates = useRef<TNullableStates>(states);
+export function useStablized<T>(value: T): T {
+  const refStableValue = useRef(value);
 
-  if (refStableStates.current !== states) {
-    if (isArray(refStableStates.current) && isArray(states)) {
-      if (!areSameArrays(refStableStates.current, states)) {
-        refStableStates.current = states;
-      }
-    } else {
-      refStableStates.current = states;
-    }
+  if (shouldStablize(refStableValue.current, value)) {
+    refStableValue.current = value;
   }
 
-  return refStableStates.current;
+  return refStableValue.current;
+}
+
+export function shouldStablize(a: any, b: any): boolean {
+  if (a !== b) {
+    if (isArray(a) && isArray(b)) {
+      if (!areSameArrays(a, b)) {
+        return true;
+      }
+    } else {
+      return true;
+    }
+  }
+  return false;
 }

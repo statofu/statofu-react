@@ -20,20 +20,23 @@
   },
   "rules": {
     "no-empty": "off",
+    "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-inferrable-types": "off"
+    "@typescript-eslint/no-inferrable-types": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "jest/expect-expect": "off"
   },
   "overrides": [
     {
-      "files": ["**/*.d.ts"],
+      "files": ["**/*.d.ts?(x)"],
       "rules": {
         "no-var": "off",
         "@typescript-eslint/no-unused-vars": "off"
       }
     },
     {
-      "files": ["**/*.test-d.ts"],
+      "files": ["**/*.test-d.ts?(x)"],
       "rules": {
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/no-unused-vars": "off"
@@ -44,6 +47,8 @@
     "**/node_modules",
     "**/dist",
     "**/coverage",
+    "verdaccio/storage",
+    "verdaccio/htpasswd",
     "**/*.html",
     "**/*.md",
     "**/LICENSE"

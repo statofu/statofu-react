@@ -19,5 +19,11 @@
     "target": "es2015"
   },
   "include": [".", "node_modules/statofu/src"],
-  "exclude": ["**/node_modules/!(statofu)", "**/dist", "**/coverage", "**/fixtures"]
+  "exclude": [
+    "**/node_modules/!(statofu)",
+    "**/dist",
+    "**/coverage",
+    "**/fixtures",
+    "verdaccio/storage"
+  ]
 }

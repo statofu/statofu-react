@@ -1,8 +1,8 @@
-import { useCallback, useSyncExternalStore } from 'react';
-import type { AnyFn, OneOrMulti, StatofuSnapshot, StatofuState } from 'statofu';
+import { useCallback, useRef, useSyncExternalStore } from 'react';
+import { AnyFn, OneOrMulti, StatofuSnapshot, StatofuState } from 'statofu';
 
 import { useStore } from './Store';
-import { useStableStates } from './utils';
+import { shouldStablize, useStablized } from './utils';
 
 export const useSnapshot: StatofuSnapshot = <
   TStates extends OneOrMulti<StatofuState>,
@@ -13,7 +13,8 @@ export const useSnapshot: StatofuSnapshot = <
   ...payloads: any[]
 ): any => {
   const store = useStore();
-  const $stableStates = useStableStates($states);
+  const $stableStates = useStablized($states);
+  const refStableSnapshotResult = useRef<any>();
 
   const subscribeToStateChanges = useCallback(
     (listener: () => void) => store.subscribe($stableStates, listener),
@@ -21,9 +22,15 @@ export const useSnapshot: StatofuSnapshot = <
   );
 
   function snapshotStates() {
-    return statesGetterOrValueSelector
-      ? store.snapshot($stableStates, statesGetterOrValueSelector, ...payloads)
+    const snapshotResult = statesGetterOrValueSelector
+      ? store.snapshot($stableStates, statesGetterOrValueSelector, ...(payloads as []))
       : store.snapshot($stableStates);
+
+    if (shouldStablize(refStableSnapshotResult.current, snapshotResult)) {
+      refStableSnapshotResult.current = snapshotResult;
+    }
+
+    return refStableSnapshotResult.current;
   }
 
   return useSyncExternalStore(subscribeToStateChanges, snapshotStates, snapshotStates);
