@@ -10,6 +10,11 @@
     "plugin:yaml/recommended",
     "prettier"
   ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "env": {
     "browser": true,
     "node": true,

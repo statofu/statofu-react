@@ -58,7 +58,15 @@
     "typetest": "tsd -f \"src/**/*.test-d.ts?(x)\"",
     "e2e": "cross-env TYPE=e2e jest",
     "serve": "npx -y serve@14 -p 3030",
-    "verdaccio": "npx -y verdaccio@5 -c verdaccio/config.yml"
+    "verdaccio": "npx -y verdaccio@5 -c verdaccio/config.yml",
+    "lint-all": "run-p \"lint:**\"",
+    "lint:tsc": "tsc",
+    "lint:eslint": "eslint \"**/*\"",
+    "lint:prettier": "prettier --check \"**/*\"",
+    "fix-all": "run-s \"fix:**\"",
+    "fix:eslint": "eslint --fix \"**/*\"",
+    "fix:prettier": "prettier --write \"**/*\"",
+    "git-clean": "git clean -d -f -x -e node_modules -e package-lock.json"
   },
   "peerDependencies": {
     "react": "^18",
@@ -80,8 +88,8 @@
     "@types/node": ">=16",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
-    "@typescript-eslint/eslint-plugin": "^5.59.11",
-    "@typescript-eslint/parser": "^5.59.11",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
     "cross-env": "^7.0.3",
     "cross-spawn": "^7.0.3",
     "eslint": "^8.42.0",
