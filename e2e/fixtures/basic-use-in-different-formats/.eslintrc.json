@@ -1,0 +1,8 @@
+{
+  "globals": {
+    "React": true,
+    "ReactDOM": true,
+    "statofuReact": true,
+    "appLogics": true
+  }
+}

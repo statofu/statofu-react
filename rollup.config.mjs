@@ -23,7 +23,7 @@ const outputDir = 'dist';
  */
 const globals = {
   react: 'React',
-  statofu: 'Statofu',
+  statofu: 'statofu',
 };
 
 /**

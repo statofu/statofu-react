@@ -39,8 +39,8 @@ if (isE2E) {
  * @type {import("jest").Config}
  **/
 const jestConf = {
-  ...presetObj,
   testEnvironment: 'jsdom',
+  ...presetObj,
   testRegex,
   maxWorkers,
   testTimeout,

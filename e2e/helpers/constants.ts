@@ -10,5 +10,5 @@ export const VERDACCIO_P = 'statofu1234';
 export const VERDACCIO_E = 'statofu-e2e@statofu.local';
 
 export const PKG_TAG_E2E = 'e2e-specific';
-export const PKG_NAME = 'statofu';
+export const PKG_NAME = 'statofu-react';
 export const PKG_DIR = path.resolve(__dirname + '/../..');
