@@ -69,7 +69,7 @@
     "git-clean": "git clean -d -f -x -e node_modules -e package-lock.json"
   },
   "peerDependencies": {
-    "react": "^18",
+    "react": ">=18",
     "statofu": "^1"
   },
   "devDependencies": {
@@ -106,6 +106,7 @@
     "jest-extended": "^3.2.4",
     "jest-mock": "^29.5.0",
     "jest-puppeteer": "^9.0.0",
+    "jsdom": "^22.1.0",
     "kill-port": "^2.0.1",
     "lodash": "^4.17.21",
     "npm-run-all": "^4.1.5",

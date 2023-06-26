@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React, { FC } from 'react';
+import React, { FC, StrictMode } from 'react';
 import type { StatofuStore } from 'statofu';
 
 import { useOperate } from './Operate';
@@ -40,16 +40,18 @@ beforeEach(() => {
 
 describe('useSnapshot', () => {
   describe('a component snapshotting one state with no selector', () => {
-    test('renders the state with no error', () => {
+    test('the state is (re)rendered with no error in the strict mode', () => {
       const ResultText: FC = () => {
         const a = useSnapshot($a);
         return <div role="result-text">{a.a}</div>;
       };
 
       const ToBeRendered: FC = () => (
-        <StoreProvider>
-          <ResultText />
-        </StoreProvider>
+        <StrictMode>
+          <StoreProvider>
+            <ResultText />
+          </StoreProvider>
+        </StrictMode>
       );
 
       expect(() => {
@@ -76,10 +78,10 @@ describe('useSnapshot', () => {
           <div>
             <button
               onClick={() => {
-                operate($a, { ...$a });
+                operate($a, (a) => ({ ...a }));
               }}
             >
-              Reset
+              Fresh
             </button>
             <button
               onClick={() => {
@@ -101,7 +103,7 @@ describe('useSnapshot', () => {
       expect(trackRender).toHaveBeenCalledTimes(1);
       expect(screen.getByRole('result-text')).toHaveTextContent('a');
 
-      await user.click(screen.getByText('Reset'));
+      await user.click(screen.getByText('Fresh'));
       expect(trackRender).toHaveBeenCalledTimes(2);
       expect(screen.getByRole('result-text')).toHaveTextContent('a');
 
@@ -147,7 +149,7 @@ describe('useSnapshot', () => {
   });
 
   describe('a component snapshotting multi states with no selector', () => {
-    test('renders the states with no error', () => {
+    test('the states are (re)rendered with no error in the strict mode', () => {
       const ResultText: FC = () => {
         const [a, b] = useSnapshot([$a, $b]);
         return (
@@ -158,9 +160,11 @@ describe('useSnapshot', () => {
       };
 
       const ToBeRendered: FC = () => (
-        <StoreProvider>
-          <ResultText />
-        </StoreProvider>
+        <StrictMode>
+          <StoreProvider>
+            <ResultText />
+          </StoreProvider>
+        </StrictMode>
       );
 
       expect(() => {
@@ -174,7 +178,7 @@ describe('useSnapshot', () => {
 
     test(
       'subscribe() is not called ' +
-        'when elements in the $states remain referentially identical on rerenders',
+        'when all elements of the $states remain referentially identical on rerenders',
       () => {
         const ResultText: FC = () => {
           const [a, b] = useSnapshot([$a, $b]);
@@ -192,26 +196,119 @@ describe('useSnapshot', () => {
         );
 
         const { rerender } = render(<ToBeRendered />);
-        expect(screen.getByRole('result-text')).toHaveTextContent('a, b');
         expect(lastCreatedStore.subscribe).toHaveBeenCalledTimes(1);
 
         rerender(<ToBeRendered />);
         expect(lastCreatedStore.subscribe).toHaveBeenCalledTimes(1);
       }
     );
+
+    test('rerenders when some elements of the states go referentially different by operate()', async () => {
+      const user = userEvent.setup();
+
+      const ResultText: FC = () => {
+        const [a, b] = useSnapshot([$a, $b]);
+        trackRender();
+        return (
+          <div role="result-text">
+            {a.a}, {b.b}
+          </div>
+        );
+      };
+
+      const ActionList: FC = () => {
+        const operate = useOperate();
+        return (
+          <div>
+            <button
+              onClick={() => {
+                operate([$a, $b], ([, b]) => [{ ...$a }, b]);
+              }}
+            >
+              Fresh
+            </button>
+            <button
+              onClick={() => {
+                operate([$a, $b], ([a, b]) => [{ ...a, a: `${a.a}+` }, b]);
+              }}
+            >
+              Alter
+            </button>
+          </div>
+        );
+      };
+
+      render(
+        <StoreProvider>
+          <ResultText />
+          <ActionList />
+        </StoreProvider>
+      );
+      expect(trackRender).toHaveBeenCalledTimes(1);
+      expect(screen.getByRole('result-text')).toHaveTextContent('a, b');
+
+      await user.click(screen.getByText('Fresh'));
+      expect(trackRender).toHaveBeenCalledTimes(2);
+      expect(screen.getByRole('result-text')).toHaveTextContent('a, b');
+
+      await user.click(screen.getByText('Alter'));
+      expect(trackRender).toHaveBeenCalledTimes(3);
+      expect(screen.getByRole('result-text')).toHaveTextContent('a+, b');
+    });
+
+    test('does not rerender when all elements of the states remain referentially identical by operate()', async () => {
+      const user = userEvent.setup();
+
+      const ResultText: FC = () => {
+        const [a, b] = useSnapshot([$a, $b]);
+        trackRender();
+        return (
+          <div role="result-text">
+            {a.a}, {b.b}
+          </div>
+        );
+      };
+
+      const Action: FC = () => {
+        const operate = useOperate();
+        return (
+          <button
+            onClick={() => {
+              operate([$a, $b], ([a, b]) => [a, b]);
+            }}
+          >
+            Click
+          </button>
+        );
+      };
+
+      render(
+        <StoreProvider>
+          <ResultText />
+          <Action />
+        </StoreProvider>
+      );
+      expect(trackRender).toHaveBeenCalledTimes(1);
+      expect(screen.getByRole('result-text')).toHaveTextContent('a, b');
+
+      await user.click(screen.getByText('Click'));
+      expect(trackRender).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('a component snapshotting one state with a selector but no payload', () => {
-    test('renders the selected value with no error', () => {
+    test('the selected value is (re)rendered with no error in the strict mode', () => {
       const ResultText: FC = () => {
         const s = useSnapshot($a, (a) => a.a);
         return <div role="result-text">{s}</div>;
       };
 
       const ToBeRendered: FC = () => (
-        <StoreProvider>
-          <ResultText />
-        </StoreProvider>
+        <StrictMode>
+          <StoreProvider>
+            <ResultText />
+          </StoreProvider>
+        </StrictMode>
       );
 
       expect(() => {
@@ -227,7 +324,7 @@ describe('useSnapshot', () => {
       const user = userEvent.setup();
 
       const ResultText: FC = () => {
-        const s = useSnapshot($a, () => 'a');
+        const s = useSnapshot($a, (a) => a.a);
         trackRender();
         return <div role="result-text">{s}</div>;
       };
@@ -237,7 +334,7 @@ describe('useSnapshot', () => {
         return (
           <button
             onClick={() => {
-              operate($a, (a) => ({ a: `${a}+` }));
+              operate($a, (a) => ({ ...a }));
             }}
           >
             Click
@@ -261,7 +358,7 @@ describe('useSnapshot', () => {
 
   describe('a component snapshotting one state with a selector and payloads', () => {
     test(
-      'renders the selected value correctly with no error ' +
+      'the selected value is (re)rendered with no error in the strict mode' +
         'as the payloads change along with the props',
       () => {
         const ResultText: FC<{ p: string }> = ({ p }) => {
@@ -270,9 +367,11 @@ describe('useSnapshot', () => {
         };
 
         const ToBeRendered: FC<{ p: string }> = ({ p }) => (
-          <StoreProvider>
-            <ResultText p={p} />
-          </StoreProvider>
+          <StrictMode>
+            <StoreProvider>
+              <ResultText p={p} />
+            </StoreProvider>
+          </StrictMode>
         );
 
         expect(() => {

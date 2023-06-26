@@ -5,7 +5,7 @@ const { StoreProvider, useOperate, useSnapshot } = require('statofu-react');
 require('../dist/appLogics.node');
 
 (async () => {
-  const theDom = new JSDOM(
+  const jsdom = new JSDOM(
     `
 <html>
   <head>
@@ -19,18 +19,18 @@ require('../dist/appLogics.node');
     { url: 'http://localhost:3030/' }
   );
 
-  const elRoot = theDom.window.document.getElementById('root');
+  const elRoot = jsdom.window.document.getElementById('root');
 
   if (!elRoot) {
     throw new Error('Root element not found');
   }
 
-  await appLogics.withJsdomWindow(theDom.window, () =>
+  await appLogics.withJsdomWindow(jsdom.window, () =>
     appLogics.test({
       ReactDOMClient,
       statofuReact: { StoreProvider, useOperate, useSnapshot },
       elRoot,
     })
   );
-  console.log(theDom.serialize());
+  console.log(jsdom.serialize());
 })();
