@@ -4,6 +4,7 @@
 import { JSDOM } from 'jsdom';
 import React, { FC } from 'react';
 import { renderToString } from 'react-dom/server';
+import { unfoldStates } from 'statofu/ssr';
 
 import { useOperate } from './Operate';
 import { useSnapshot } from './Snapshot';
@@ -40,7 +41,7 @@ test(`gets SSR'd with no error`, () => {
       renderToString(
         <StoreProvider
           onCreate={(store) => {
-            store.operate($a, a1);
+            unfoldStates(store, { $a }, { $a: a1 });
           }}
         >
           <ResultText />
