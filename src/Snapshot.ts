@@ -1,5 +1,5 @@
 import { useCallback, useRef, useSyncExternalStore } from 'react';
-import { AnyFn, OneOrMulti, StatofuSnapshot, StatofuState } from 'statofu';
+import type { AnyFn, OneOrMulti, StatofuSnapshot, StatofuState } from 'statofu';
 
 import { useStore } from './Store';
 import { shouldStablize, useStablized } from './utils';
