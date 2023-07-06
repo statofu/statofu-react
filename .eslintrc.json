@@ -52,10 +52,13 @@
     "**/node_modules",
     "**/dist",
     "**/coverage",
+    "**/examples",
     "verdaccio/storage",
     "verdaccio/htpasswd",
     "**/*.html",
     "**/*.md",
+    "**/*.jpg",
+    "**/*.gif",
     "**/LICENSE"
   ]
 }
