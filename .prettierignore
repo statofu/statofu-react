@@ -5,6 +5,7 @@
 coverage
 
 dist
+build
 
 node_modules
 package-lock.json
@@ -16,4 +17,6 @@ verdaccio/htpasswd
 !.github
 !.*.json
 
+*.jpg
+*.gif
 LICENSE
