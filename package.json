@@ -3,8 +3,16 @@
   "version": "0.0.0-semantic-release",
   "author": "CgL",
   "license": "MIT",
-  "description": "",
-  "keywords": [],
+  "description": "Predictable state changes at a low cost. Fast, and small.",
+  "keywords": [
+    "statofu",
+    "react",
+    "redux",
+    "state",
+    "management",
+    "predictable",
+    "functional"
+  ],
   "homepage": "https://github.com/statofu/statofu-react",
   "bugs": {
     "url": "https://github.com/statofu/statofu-react/issues"
