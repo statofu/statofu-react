@@ -20,7 +20,7 @@ One big problem with today's widely accepted state management libraries is that 
 >
 > ...
 
-Statofu is a state management library built to achieve **predictable state changes at a low cost** 🌈. It's framework-agnostic, small and fast. Statofu React is the library for the integration with React.
+Statofu is a state management library built to achieve **predictable state changes at a low cost** 🌈. It's framework-agnostic, small and fast. Statofu React is the library of the React integration.
 
 ## Installation
 
@@ -28,7 +28,7 @@ Statofu is a state management library built to achieve **predictable state chang
 npm i -S statofu statofu-react # yarn or pnpm also works
 ```
 
-Here, `statofu`, the state management library, plays as the peer dependency of `statofu-react`, the integration with React.
+The state management library, [`statofu`](https://github.com/statofu/statofu), is required as the peer dependency of the React integration, `statofu-react`.
 
 ## Essentials
 
@@ -199,7 +199,7 @@ const SomeComponent3: React.FC = () => {
     op([$textEditorState, $itemPanelState], submitTextForSelectedItem);
   }
 
-  return <>{/* ... attaches event handlers ... */}</>;
+  return <>{/* attaches event handlers */}</>;
 };
 ```
 
@@ -207,7 +207,7 @@ Inside a call of an operating function, the current state values indexed by the 
 
 ### Deriving data
 
-Furthurmore, to derive data from states while using `useSnapshot`, a selector that accepts one or multiple states along with zero or more payloads and calculates values can be passed in. A selector can be a named function:
+Furthurmore, to derive data from states, a selector that accepts one or multiple states along with zero or more payloads and calculates a value can be passed in while using `useSnapshot`. Selectors can be named functions:
 
 ```tsx
 function getSelectedItem(state: ItemPanelState): ItemPanelState['itemList'][number] | undefined {
@@ -239,7 +239,7 @@ const SomeComponent5: React.FC = () => {
 };
 ```
 
-Also, a selector can be an anonymous function:
+Also, selectors can be anonymous functions:
 
 ```tsx
 const SomeComponent6: React.FC = () => {
@@ -401,7 +401,7 @@ hydrateRoot(
 );
 ```
 
-Note that, this example can be optimized in different ways like rendering the HTML body as a stream. When using it in the real world, it is supposed to be tailored to real-world cases.
+Note that, this example can be optimized in different ways like rendering the HTML body as a stream. When using it in the real world, we should tailor it to real-world needs.
 
 ## APIs
 
@@ -425,7 +425,7 @@ Options:
 The higher-order component(HOC) version of `StoreProvider`:
 
 ```tsx
-const AppWithStore = withStore()(App);
+const AppWithStore = withStore(/* options */)(App);
 ```
 
 Options: same as `StoreProvider`'s.
@@ -448,7 +448,7 @@ const { text, visible } = useSnapshot($textEditorState);
 const [itemPanelState, textEditorState] = useSnapshot([$itemPanelState, $textEditorState]);
 ```
 
-It can also accept selectors:
+It can accept selectors:
 
 ```tsx
 const selectedItem = useSnapshot($itemPanelState, getSelectedItem);
@@ -484,7 +484,7 @@ function handleSubmitClick() {
 
 ## Contributing
 
-For any bugs or thoughts, welcome to [open an issue](https://github.com/statofu/statofu-react/issues), or just DM me on [Twitter](https://twitter.com/licg9999) / [Wechat](https://github.com/statofu/statofu/blob/main/assets/ed0458952a4930f1aeebd01da0127de240c85bbf.jpg).
+For any bugs or any thoughts, welcome to [open an issue](https://github.com/statofu/statofu-react/issues), or just DM me on [Twitter](https://twitter.com/licg9999) / [Wechat](https://github.com/statofu/statofu/blob/main/assets/ed0458952a4930f1aeebd01da0127de240c85bbf.jpg).
 
 ## License
 
