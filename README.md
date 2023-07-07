@@ -28,7 +28,7 @@ Statofu is a state management library built to achieve **predictable state chang
 npm i -S statofu statofu-react # yarn or pnpm also works
 ```
 
-The state management library, `statofu`, is required as the peer dependency of the React integration, `statofu-react`.
+The state management library, [`statofu`](https://github.com/statofu/statofu), is required as the peer dependency of the React integration, `statofu-react`.
 
 ## Essentials
 
